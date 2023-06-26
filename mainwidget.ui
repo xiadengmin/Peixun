@@ -150,27 +150,27 @@ p, li { white-space: pre-wrap; }
    </row>
    <column>
     <property name="text">
-     <string>序号</string>
+     <string>        序号        </string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>姓名</string>
+     <string>        姓名        </string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>性别</string>
+     <string>        性别        </string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>年龄</string>
+     <string>        年龄        </string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>专业</string>
+     <string>      专业      </string>
     </property>
     <property name="font">
      <font>
@@ -604,6 +604,21 @@ p, li { white-space: pre-wrap; }
     </rect>
    </property>
   </widget>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>550</y>
+     <width>161</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="page"/>
+   <widget class="QWidget" name="page_2"/>
+  </widget>
   <zorder>tableWidget_4</zorder>
   <zorder>tableWidget_3</zorder>
   <zorder>textBrowser</zorder>
@@ -614,6 +629,7 @@ p, li { white-space: pre-wrap; }
   <zorder>pushButton</zorder>
   <zorder>pushButton_2</zorder>
   <zorder>pushButton_3</zorder>
+  <zorder>stackedWidget</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
