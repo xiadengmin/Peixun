@@ -26,10 +26,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwidget.cpp
+        XDMFrame.cpp \
+    xdmlogtable.cpp \
+    people.cpp \
+    student.cpp \
+    programmer.cpp \
+    page.cpp \
+    logwidget.cpp
 
 HEADERS += \
-        mainwidget.h
+        XDMFrame.h \
+    xdmlogtable.h \
+    people.h \
+    student.h \
+    programmer.h \
+    page.h \
+    logwidget.h
 
 FORMS += \
-        mainwidget.ui
+        XDMFrame.ui
