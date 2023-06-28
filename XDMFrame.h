@@ -7,6 +7,8 @@
 #include "xdmlogtable.h"
 #include <QStringList>
 
+#include <QLineEdit>
+
 namespace Ui {
 class XDMFrame;
 }
@@ -21,16 +23,25 @@ public:
 
 private slots:
     void slotSave();
+    void slotAdd();
+    void slotDelet();
 
-    void on_pushButton_Add_clicked();
-
-    void on_pushButton_Open_clicked();
 
 private:
     Ui::XDMFrame *ui;
 
     XDMLogTable *m_pStuTable;
     XDMLogTable *m_pProgramTable;
+private:
+    QLineEdit *lineEdit_name;
+    QLineEdit *lineEdit_sex;
+    QLineEdit *lineEdit_age;
+
+
+
+
 };
+
+
 
 #endif // MAINWIDGET_H
