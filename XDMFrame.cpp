@@ -10,7 +10,7 @@
 #include <QMap>
 #include  <QToolTip>
 #include <QMessageBox>
-
+#include <qDebug>
 XDMFrame::XDMFrame(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::XDMFrame)
@@ -18,7 +18,7 @@ XDMFrame::XDMFrame(QWidget *parent) :
     ui->setupUi(this);  // 使用Qt Designer生成的代码加载UI布局
 
     QStringList header;
-    header<<"ID";   //添加QString字符串
+//    header<<"ID";   //添加QString字符串
     header<<"name";
     header<<"sex";
     header<<"age";
@@ -31,26 +31,26 @@ XDMFrame::XDMFrame(QWidget *parent) :
     //绑定表头和所在列
     enum StuColunm
     {
-        column_id = 0,
-        column_name = 1,
-        column_sex = 2,
-        column_age = 3,
-        column_xuehao = 4,
-        column_major = 5
+//        column_id = 0,
+        column_name = 0,
+        column_sex = 1,
+        column_age = 2,
+        column_xuehao = 3,
+        column_major = 4
     };
 
-    table1HeaderList.insert(column_id,"ID");
-    table1HeaderList.insert(column_name,"name");
-    table1HeaderList.insert(column_sex,"sex");
-    table1HeaderList.insert(column_age,"age");
-    table1HeaderList.insert(column_xuehao,"xuehao");
-    table1HeaderList.insert(column_major,"major");
+//    table1HeaderList_stu.insert(column_id,"ID");
+    table1HeaderList_stu.insert(column_name,"name");
+    table1HeaderList_stu.insert(column_sex,"sex");
+    table1HeaderList_stu.insert(column_age,"age");
+    table1HeaderList_stu.insert(column_xuehao,"xuehao");
+    table1HeaderList_stu.insert(column_major,"major");
 
-    m_pStuTable->setHeaderList(table1HeaderList.values());
+    m_pStuTable->setHeaderList(table1HeaderList_stu.values());
     //获取列号  table1HeaderList.key("ID");
 
     header.clear();
-    header<<"ID";
+//    header<<"ID";
     header<<"name";
     header<<"sex";
     header<<"age";
@@ -62,20 +62,20 @@ XDMFrame::XDMFrame(QWidget *parent) :
     //绑定表头和所在列
     enum ProColunm
     {
-        column_pid = 0,
-        column_pname = 1,
-        column_psex = 2,
-        column_page = 3,
-        column_pgongling = 4,
+//        column_pid = 0,
+        column_pname = 0,
+        column_psex = 1,
+        column_page = 2,
+        column_pgongling = 3,
     };
-    table1HeaderList.clear(); // 清空
-    table1HeaderList.insert(column_pid,"ID");
-    table1HeaderList.insert(column_pname,"name");
-    table1HeaderList.insert(column_psex,"sex");
-    table1HeaderList.insert(column_page,"age");
-    table1HeaderList.insert(column_pgongling,"gongling");
+//    table1HeaderList.clear(); // 清空
+//    table1HeaderList_pro.insert(column_pid,"ID");
+    table1HeaderList_pro.insert(column_pname,"name");
+    table1HeaderList_pro.insert(column_psex,"sex");
+    table1HeaderList_pro.insert(column_page,"age");
+    table1HeaderList_pro.insert(column_pgongling,"gongling");
 
-    m_pProgramTable->setHeaderList(table1HeaderList.values());
+    m_pProgramTable->setHeaderList(table1HeaderList_pro.values());
 
 
     //初始化g_Table
@@ -95,13 +95,25 @@ XDMFrame::XDMFrame(QWidget *parent) :
     connect(ui->pushButton_Delete,SIGNAL(clicked(bool)),this,SLOT(slotDelet()));
     connect(ui->lineEdit_age,SIGNAL(textChanged(QString)),this,SLOT(slotlineEdit_Age(QString)));
     connect(ui->comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(slotComboBoxChange(int)));
-    //获取点击的单元格位置信息
-    connect(m_pStuTable,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(getItem(QModelIndex)));
     connect(ui->tabWidget,SIGNAL(tabBarClicked(int)),this,SLOT(slotTableWidgetChange(int)));
+
+    //获取点击的单元格位置信息
+    connect(g_Table,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(getItem(QModelIndex)));
+
 
    //Tab回车跳转LineEdit 设置下一个焦点  五个lineEdit使用 出现异常 （lineEdit的创建顺序问题 desingner添加）
 //    setTabOrder(lineEdit_name, lineEdit_sex);
 //    setTabOrder(lineEdit_sex, lineEdit_age);
+
+
+//    connect(ui->lineEdit_name, &QLineEdit::editingFinished, this, &XDMFrame::slot)
+
+//    connect(ui->tabWidget, &QTabWidget::)
+
+
+//    QTableWidget *tab = new QTableWidget;
+//    connect(tab, &QTableWidget::activated)
+
 
 }
 
@@ -159,59 +171,43 @@ void XDMFrame::slotSave()
 }
 
 
-/**
- * @brief  表格发生变动后，table1HeaderList 同步更新
- */
-//void XDMFrame::updateHeaderList()
-//{
-//    table1HeaderList.clear();
-//    for(int i=0; i<m_pStuTable->columnCount(); ++i) {
-//        table1HeaderList[i] = m_pStuTable->horizontalHeaderItem(i)->text();
-//    }
-//}
-
-
 
 /**
- * @brief  添加信息到表格中 (static int rowCounter_Stu = 0 问题)
+ * @brief  添加信息到表格中
  */
 
 
 void XDMFrame::slotAdd()
 {      
-    // 获取当前表格的行数
+
+    // 获取属性栏中的数据
+    QString name = ui->lineEdit_name->text();
+    QString sex = ui->comboBox_sex->currentText();
+    QString age = ui->lineEdit_age->text();
+    QString xuehao = ui->lineEdit_xuehao->text();
+    QString major = ui->lineEdit_major->text();
+
+    // 在表格中插入新行
     int row = g_Table->rowCount();
-    // 插入新行
-    g_Table->insertRow(row+1);
-    //gTable->insertRow(rowCounter_Stu);
-    // 设置序号
-    QTableWidgetItem *indexItem = new QTableWidgetItem(QString::number(row + 1));
-    g_Table->setItem(row, 0, indexItem);
+    g_Table->insertRow(row);
 
-    // 获取属性栏的内容
-    QTableWidgetItem *nameC = new QTableWidgetItem(ui->lineEdit_name->text());
-    QTableWidgetItem *sexC = new QTableWidgetItem(ui->comboBox_sex->currentText());
-    QTableWidgetItem *ageC = new QTableWidgetItem(ui->lineEdit_age->text());
-    QTableWidgetItem *xuehaoC = new QTableWidgetItem(ui->lineEdit_xuehao->text());
-    QTableWidgetItem *majorC = new QTableWidgetItem(ui->lineEdit_major->text());
-
-
-    g_Table->setItem(row, 1, nameC); // 第一列
-    g_Table->setItem(row, table1HeaderList.key("sex"), sexC);
-    g_Table->setItem(row, table1HeaderList.key("age"), ageC);
-    g_Table->setItem(row, table1HeaderList.key("xuehao"), xuehaoC);
-    g_Table->setItem(row, table1HeaderList.key("major"), majorC);
-//    g_Table->setItem(rowCounter_Stu, table1HeaderList.key("name"), nameC);
-    row++;
+    // 将属性栏数据插入表格的相应列
+    g_Table->setItem(row, table1HeaderList_stu.key("name"), new QTableWidgetItem(name));
+    g_Table->setItem(row, table1HeaderList_stu.key("sex"), new QTableWidgetItem(sex));
+    g_Table->setItem(row, table1HeaderList_stu.key("age"), new QTableWidgetItem(age));
+    g_Table->setItem(row, table1HeaderList_stu.key("xuehao"), new QTableWidgetItem(xuehao));
+    g_Table->setItem(row, table1HeaderList_stu.key("major"), new QTableWidgetItem(major));
 
     //添加后清空属性栏内容
     ui->lineEdit_name->clear();
-//    ui->lineEdit_sex->clear();
+    //    ui->lineEdit_sex->clear();
     QString defaultText = "男";
     ui->comboBox_sex->setCurrentText(defaultText);
     ui->lineEdit_age->clear();
     ui->lineEdit_xuehao->clear();
     ui->lineEdit_major->clear();
+
+
 }
 
 
@@ -331,7 +327,6 @@ void XDMFrame::slotTableWidgetChange(int index)
         ui->lineEdit_major->setVisible(false);
         ui->major->setVisible(false);//隐藏属性栏专业
         ui->lineEdit_major->setVisible((false));//隐藏表格专业
-
         g_Table = m_pProgramTable;
      }
 }

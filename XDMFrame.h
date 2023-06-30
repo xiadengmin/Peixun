@@ -31,6 +31,7 @@ private slots:
     void slotlineEdit_Age(const QString &arg1);
     void slotComboBoxChange(int index);
     void slotTableWidgetChange(int index);
+
     void getItem(const QModelIndex &index);
 //    void slotUpdateHeaderList();
 
@@ -48,8 +49,10 @@ private:
     QLineEdit *lineEdit_major;
     QStringList header;
 
-    QMap<int,QString> table1HeaderList;
+    QMap<int,QString> table1HeaderList_stu;
+    QMap<int,QString> table1HeaderList_pro;
 
+//    bool isStu = true;
 };
 
 
