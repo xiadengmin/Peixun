@@ -32,6 +32,15 @@ int main(int argc, char *argv[])
         qDebug()<<"open!";
     }
 
+    //    QSqlQuery query(db);
+    //    QString s = "select * from user";
+    //    query.exec(s);
+    //    while (query.next())
+    //    {
+    //        if (query.value("Db").toString() == "sys");
+    //    }
+
+
     QSqlQuery result = db.exec("select user from user;");
     while (result.next())
     {
@@ -39,8 +48,10 @@ int main(int argc, char *argv[])
     }
 
 
+
     XDMFrame w;
-    w.showMaximized();
+//    w.showMaximized();
+    w.show();
 
     return a.exec();
 }

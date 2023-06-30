@@ -169,9 +169,6 @@
              <item row="0" column="1">
               <widget class="QLineEdit" name="lineEdit_name"/>
              </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEdit_sex"/>
-             </item>
              <item row="3" column="1">
               <widget class="QLineEdit" name="lineEdit_xuehao"/>
              </item>
@@ -180,6 +177,20 @@
              </item>
              <item row="2" column="1">
               <widget class="QLineEdit" name="lineEdit_age"/>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="comboBox_sex">
+               <item>
+                <property name="text">
+                 <string>男</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>女</string>
+                </property>
+               </item>
+              </widget>
              </item>
             </layout>
            </item>
@@ -520,6 +531,20 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>lineEdit_name</tabstop>
+  <tabstop>comboBox_sex</tabstop>
+  <tabstop>lineEdit_age</tabstop>
+  <tabstop>lineEdit_xuehao</tabstop>
+  <tabstop>lineEdit_major</tabstop>
+  <tabstop>pushButton_Add</tabstop>
+  <tabstop>curpage</tabstop>
+  <tabstop>gotopage</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>pushButton_Open</tabstop>
+  <tabstop>pushButton_Delete</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

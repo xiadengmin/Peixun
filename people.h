@@ -16,14 +16,15 @@ public:
 
     void setAge(int age);
     int getAge() const;
+    std::string name;
+    std::string sex;
+    int age;
 
 protected:
 
 
 private:
-    std::string name;
-    std::string sex;
-    int age;
+
 
 };
 

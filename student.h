@@ -8,8 +8,8 @@ class Student : public People
 public:
     Student(const std::string &name, const std::string &sex, int age);
 
-public:
-    std::string xueHao;
+private:
+    std::string xuehao;
     std::string major;
 };
 
