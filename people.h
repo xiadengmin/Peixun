@@ -1,23 +1,24 @@
 #ifndef PEOPLE_H
 #define PEOPLE_H
 
-#include <string>
+#include <QString>
 
 class People {
 
 public:
-    People(const std::string &name, const std::string &sex, int age);
+    People(const QString &name, const QString &sex, int age);
 
-    void setName(const std::string &name);
-    std::string getName() const;
+    void setName(const QString &name);
+    QString getName() const;
 
-    void setSex(const std::string &sex);
-    std::string getSex() const;
+    void setSex(const QString &sex);
+    QString getSex() const;
 
     void setAge(int age);
     int getAge() const;
-    std::string name;
-    std::string sex;
+
+    QString name;
+    QString sex;
     int age;
 
 protected:

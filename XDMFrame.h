@@ -6,7 +6,7 @@
 
 #include <QStringList>
 #include <QLineEdit>
-
+#include <QList>
 #include "xdmlogtable.h"
 #include "student.h"
 #include "programmer.h"
@@ -23,16 +23,27 @@ public:
     explicit XDMFrame(QWidget *parent = 0);
     ~XDMFrame();
 
+    void lineEditClear();
+    void updateCur();
 
 private slots:
     void slotSave();
     void slotAdd();
-    void slotDelet();
+    void slotDelete();
     void slotlineEdit_Age(const QString &arg1);
     void slotComboBoxChange(int index);
     void slotTableWidgetChange(int index);
 
-    void getItem(const QModelIndex &index);
+    void slotHomePage();
+    void slotPageUp();
+    void slotPageDown();
+    void slotLastPage();
+    void slotRedirect();
+
+    void slotlineEdit(QStringList sl);
+
+
+//    void getItem(const QModelIndex &index);     引用和指针的区别
 //    void slotUpdateHeaderList();
 
 private:
@@ -41,7 +52,18 @@ private:
     XDMLogTable *m_pStuTable;
     XDMLogTable *m_pProgramTable;
     XDMLogTable *g_Table;
+
+//    QVector<QVector<QString>> allData;  // 存储所有数据的二维向量
+//    static const int pageSize = 10;  // 每页的数据条数
+    QList<Student> s_list;
+    QList<Programmer> p_list;
+    int currentPage_1 = 1;  // 当前页码，初始化为1
+    int currentPage_2 = 1;
+    int allPage_1;
+    int allPage_2;
+
 private:
+
     QLineEdit *lineEdit_name;
     QLineEdit *lineEdit_sex;
     QLineEdit *lineEdit_age;
@@ -52,7 +74,8 @@ private:
     QMap<int,QString> table1HeaderList_stu;
     QMap<int,QString> table1HeaderList_pro;
 
-//    bool isStu = true;
+
+
 };
 
 

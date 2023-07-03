@@ -30,18 +30,14 @@ SOURCES += \
     xdmlogtable.cpp \
     people.cpp \
     student.cpp \
-    programmer.cpp \
-    page.cpp \
-    logwidget.cpp
+    programmer.cpp
 
 HEADERS += \
         XDMFrame.h \
     xdmlogtable.h \
     people.h \
     student.h \
-    programmer.h \
-    page.h \
-    logwidget.h
+    programmer.h
 
 FORMS += \
         XDMFrame.ui

@@ -1,3 +1,4 @@
+
 #include "xdmlogtable.h"
 
 #include <QHeaderView>
@@ -14,8 +15,37 @@ XDMLogTable::XDMLogTable(QWidget *parent) : QTableWidget(parent)
     horizontalHeader()->setVisible(true);
     verticalHeader()->setVisible(true);
 
-    connect(this, &XDMLogTable::itemSelectionChanged, this, [=](){
+
+    connect(this, &XDMLogTable::itemSelectionChanged, this, [=]()
+    {
         this->list = this->selectedItems();
+
+        QStringList sl;
+        // 获取当前选中行的项
+        int currentRow = XDMLogTable::currentRow(); // 获取当前选中行的索引
+        for(int col = 0; col < XDMLogTable::columnCount(); col++)
+        {
+            QTableWidgetItem* item = XDMLogTable::item(currentRow, col); // 获取当前行的每一列的项
+            if(item)
+            {
+                QString text = item->text(); // 获取项的文本
+                sl << text;
+            }
+        }
+        qDebug() << sl;
+        emit this->sendToXDMF(sl);
+
+
+//        if (!this->list.isEmpty())
+//        {
+//            // 获取当前选中的行
+//            int row = this->list.first()->row();
+//            // 更新属性栏的值，属性栏由QLineEdit组成
+//            lineEdit_gname->setText(this->item(row, 0)->text());
+//            lineEdit_gsex->setText(this->item(row, 1)->text());
+
+
+//        }
 
     });
 }
@@ -37,14 +67,6 @@ void XDMLogTable::setHeaderList(QStringList header)
 
 void XDMLogTable::contextMenuEvent(QContextMenuEvent *e)
 {
-//    QMenu menu(this);
-//    QAction *action = menu.addAction("菜单项1");
-//    connect(action, &QAction::triggered, this, &XDMLogTable::slotSave);
-
-//    action = menu.addAction("删除");
-//    connect(action, &QAction::triggered, this, &XDMLogTable::slotDelete);
-
-
     QMenu menu(this);
 
     QAction *saveAction = new QAction("保存为文件", this);
@@ -60,6 +82,24 @@ void XDMLogTable::contextMenuEvent(QContextMenuEvent *e)
     menu.exec(mapToGlobal(p));
 }
 
+/**
+ * @brief 接收XDMFrame中的g_table
+ */
+void XDMLogTable::getTableName(QString str)
+{
+    this->tableName = str;
+}
+
+//void XDMLogTable::getLineEdit(QLineEdit mm)
+//{
+//    this->lineEdit_gname = mm;
+//    this->lineEdit_gsex = mm;
+//    this->lineEdit_gage = mm;
+//    this->lineEdit_gxuehao = mm;
+//    this->lineEdit_gmajor = mm;
+
+//}
+
 void XDMLogTable::slotSave()
 {
     QString filename = QFileDialog::getSaveFileName(this, "保存", "", "CSV文件 (*.csv)");
@@ -68,10 +108,18 @@ void XDMLogTable::slotSave()
     if (file.open(QIODevice::WriteOnly))
     {
         QTextStream stream(&file);
-        // 设置编码 仍出现乱码
-        stream.setCodec(QTextCodec::codecForUtfText(file.readAll(), QTextCodec::codecForName("UTF-8")));
-//        stream.setCodec("UTF-8");
-        stream << "姓名,性别,年龄,学号,专业\n";
+        // 设置编码 表头仍出现乱码
+        if(tableName == "p")
+        {
+            stream << "name,sex,age,gongling\n";
+        }
+        else
+        {
+            stream << "name,sex,age,xuehao,major\n";
+        }
+        stream.setCodec("UTF-8");
+//        stream << "name,sex,age,xuehao,major\n";
+
         int r = this->list.size() / this->columnCount(); // 计算列数
         int i = 0;
         for (int row = 0; row < r; ++row)
@@ -99,14 +147,9 @@ void XDMLogTable::slotSave()
 void XDMLogTable::slotDelete()
 {
     // 创建一个提示框
-    QMessageBox messageBox;
-    messageBox.setIcon(QMessageBox::Question);
-    messageBox.setWindowTitle("用户提示");
-    messageBox.setText("请问是否删除？");
-    messageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    QMessageBox::StandardButton result = QMessageBox::question(this, "用户提示", "请问是否删除？", QMessageBox::Yes | QMessageBox::No);
 
     // 处理用户的选择
-    int result = messageBox.exec();
     if (result == QMessageBox::Yes)
     {
         // 用户点击了"是"按钮，将选中数据删除
@@ -124,7 +167,3 @@ void XDMLogTable::slotDelete()
 }
 
 
-/**
- * @brief 设置填充表格
- * @param header
- */

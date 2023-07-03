@@ -2,15 +2,19 @@
 #define STUDENT_H
 
 #include "people.h"
-
+#include <QString>
 class Student : public People
 {
 public:
-    Student(const std::string &name, const std::string &sex, int age);
+    Student(const QString &name, const QString &sex, int age);
 
+    void setMajor(QString major);
+    void setXuehao(QString xuehao);
+    QString getMajor();
+    QString getXuehao();
 private:
-    std::string xuehao;
-    std::string major;
+    QString xuehao;
+    QString major;
 };
 
 

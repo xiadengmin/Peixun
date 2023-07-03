@@ -1,7 +1,19 @@
 #include "programmer.h"
 
-Programmer::Programmer(const std::string &name, const std::string &sex, int age)
+Programmer::Programmer(const QString &name, const QString &sex, int age)
     : People(name,sex,age)
 {
+    this->name = name;
+    this->age = age;
+    this->sex = sex;
+}
 
+void Programmer::setGongling(QString gongling)
+{
+    this->gongling = gongling;
+}
+
+QString Programmer::getGongling()
+{
+    return this->gongling;
 }

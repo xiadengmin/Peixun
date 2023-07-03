@@ -1,20 +1,20 @@
 #include "people.h"
 
-People::People(const std::string &name, const std::string &sex, int age) : name(name), sex(sex), age(age) {}
+People::People(const QString &name, const QString &sex, int age) : name(name), sex(sex), age(age) {}
 
-void People::setName(const std::string &name) {
+void People::setName(const QString &name) {
     this->name = name;
 }
 
-std::string People::getName() const {
+QString People::getName() const {
     return name;
 }
 
-void People::setSex(const std::string &sex) {
+void People::setSex(const QString &sex) {
     this->sex = sex;
 }
 
-std::string People::getSex() const {
+QString People::getSex() const {
     return sex;
 }
 

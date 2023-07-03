@@ -1,13 +1,15 @@
 #ifndef PROGRAMMER_H
 #define PROGRAMMER_H
 #include "people.h"
-
+#include <QString>
 class Programmer : public People
 {
 public:
-    Programmer(const std::string &name,const std::string &sex ,int age);
+    Programmer(const QString &name,const QString &sex ,int age);
+    void setGongling(QString gongling);
+    QString getGongling();
 private:
-    std::string gongling;
+    QString gongling;
 };
 //如何对它读取和设置
 
