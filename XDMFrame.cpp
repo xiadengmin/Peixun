@@ -103,14 +103,14 @@ XDMFrame::XDMFrame(QWidget *parent) :
     connect(ui->lineEdit_age,SIGNAL(textChanged(QString)),this,SLOT(slotlineEdit_Age(QString)));
     //类型和tab切换
     connect(ui->comboBox,SIGNAL(currentIndexChanged(int)),this,SLOT(slotComboBoxChange(int)));
-    connect(ui->tabWidget,SIGNAL(tabBarClicked(int)),this,SLOT(slotTableWidgetChange(int)));
+//    connect(ui->tabWidget,SIGNAL(tabBarClicked(int)),this,SLOT(slotTableWidgetChange(int)));
 
     //分页按钮
     connect(ui->pushButton_HomePage,SIGNAL(clicked(bool)),this,SLOT(slotHomePage()));
     connect(ui->pushButton_PageUp,SIGNAL(clicked(bool)),this,SLOT(slotPageUp()));
     connect(ui->pushButton_PageDown,SIGNAL(clicked(bool)),this,SLOT(slotPageDown()));
     connect(ui->pushButton_LastPage,SIGNAL(clicked(bool)),this,SLOT(slotLastPage()));
-    connect(ui->pushButton_Redirect,SIGNAL(clicked(bool)),this,SLOT(slotRedirect()));
+    connect(ui->pushButton_Redirect,SIGNAL(clicked(bool)),this,SLOT(slotRedirect(bool)));
 
 
 
@@ -130,6 +130,32 @@ XDMFrame::XDMFrame(QWidget *parent) :
     connect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit); // 同步属性栏lineEdit内容 接收xdmlogtable中的emit 发出的信号
 
     this->updateCur();
+    this->update();
+
+    QSqlQuery query;
+    query.exec("select * from student");
+    while (query.next()){
+        int row = m_pStuTable->rowCount();
+        if (row < 10){
+            m_pStuTable->insertRow(row);
+            for (int i = 1; i < 6; i++){
+                QTableWidgetItem* item = new QTableWidgetItem(query.value(i).toString());
+                m_pStuTable->setItem(row, i - 1, item);
+            }
+        }
+    }
+
+    query.exec("select * from programmer");
+    while (query.next()){
+        int row = m_pProgramTable->rowCount();
+        if (row < 10){
+            m_pProgramTable->insertRow(row);
+            for (int i = 1; i < 6; i++){
+                QTableWidgetItem* item = new QTableWidgetItem(query.value(i).toString());
+                m_pProgramTable->setItem(row, i - 1, item);
+            }
+        }
+    }
 
 }
 
@@ -152,12 +178,88 @@ void XDMFrame::lineEditClear()
 void XDMFrame::updateCur()
 {
     if (this->g_Table->tableName == "s"){
+<<<<<<< HEAD
 //        qDebug() << this->currentPage_1;
+=======
+>>>>>>> 5a22ea0 (mysql_2)
         ui->curpage->setText("第" + QString::number(this->currentPage_1) + "页");
     }
     else{
 //        qDebug() << this->currentPage_2;
         ui->curpage->setText("第" + QString::number(this->currentPage_2) + "页");
+    }
+}
+
+void XDMFrame::update()
+{
+    s_list.clear();
+    QSqlQuery query;
+    query.exec("select * from student");
+    while (query.next()){
+        Student s(query.value(1).toString(), query.value(2).toString(), query.value(3).toInt());
+        s.setXuehao(query.value(4).toString());
+        s.setMajor(query.value(5).toString());
+        s_list.append(s);
+    }
+    this->allPage_1 = qCeil(double(s_list.length()) / 10.0);
+
+    p_list.clear();
+    query.exec("select * from programmer");
+    while (query.next()){
+        Programmer p(query.value(1).toString(), query.value(2).toString(), query.value(3).toInt());
+        p.setGongling(query.value(4).toString());
+        p_list.append(p);
+    }
+    this->allPage_2 = qCeil(double(p_list.length()) / 10.0);
+}
+
+
+void XDMFrame::refreshPage()
+{
+    g_Table->clearContents();
+    g_Table->setRowCount(0);
+    int frist = 0, end = 9;
+    if (g_Table->tableName == "p"){
+        int currentPage = this->currentPage_2;
+        frist = frist + 10 * (currentPage - 1);
+        end = end  + 10 * (currentPage - 1);
+        if (end > p_list.length()){
+            end = p_list.length() - 1;
+        }
+        for (int i = frist; i <= end; i++){
+            int row = g_Table->rowCount();
+            g_Table->insertRow(row);
+            QTableWidgetItem* item1 = new QTableWidgetItem(p_list[i].name);
+            g_Table->setItem(row, 0, item1);
+            QTableWidgetItem* item2 = new QTableWidgetItem(p_list[i].sex);
+            g_Table->setItem(row, 1, item2);
+            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(p_list[i].age));
+            g_Table->setItem(row, 2, item3);
+            QTableWidgetItem* item4 = new QTableWidgetItem(p_list[i].getGongling());
+            g_Table->setItem(row, 3, item4);
+        }
+    }
+    else{
+        int currentPage = this->currentPage_1;
+        frist = frist + 10 * (currentPage - 1);
+        end = end  + 10 * (currentPage - 1);
+        if (end > s_list.length()){
+            end = s_list.length() - 1;
+        }
+        for (int i = frist; i <= end; i++){
+            int row = g_Table->rowCount();
+            g_Table->insertRow(row);
+            QTableWidgetItem* item1 = new QTableWidgetItem(s_list[i].name);
+            g_Table->setItem(row, 0, item1);
+            QTableWidgetItem* item2 = new QTableWidgetItem(s_list[i].sex);
+            g_Table->setItem(row, 1, item2);
+            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(s_list[i].age));
+            g_Table->setItem(row, 2, item3);
+            QTableWidgetItem* item4 = new QTableWidgetItem(s_list[i].getXuehao());
+            g_Table->setItem(row, 3, item4);
+            QTableWidgetItem* item5 = new QTableWidgetItem(s_list[i].getMajor());
+            g_Table->setItem(row, 4, item5);
+        }
     }
 }
 
@@ -172,6 +274,11 @@ void XDMFrame:: slotSave()
 {
     s_list.clear();
     p_list.clear();
+<<<<<<< HEAD
+=======
+    //清空数据库
+
+>>>>>>> 5a22ea0 (mysql_2)
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV"), ".", tr("CSV Files (*.csv)"));
     if(fileName.isEmpty())
     {
@@ -195,6 +302,13 @@ void XDMFrame:: slotSave()
                 continue; // 跳过前两行表头
             }
             QStringList fields = line.split(",");  // CSV文件的字段通常用逗号分隔
+            int sex;
+            if (fields[1] == "男"){
+                sex = 1;
+            }
+            else{
+                sex = 0;
+            }
             if (g_Table->tableName == "s"){
                 Student s(fields[0], fields[1], fields[2].toInt());
                 s.setMajor(fields[4]);
@@ -206,7 +320,11 @@ void XDMFrame:: slotSave()
                 query.prepare("INSERT INTO student (name, sex, age, xuehao, major) "
                               "VALUES (:name, :sex, :age, :xuehao, :major)");
                 query.bindValue(":name", fields[0]);
+<<<<<<< HEAD
                 query.bindValue(":sex", fields[1]);
+=======
+                query.bindValue(":sex", sex);
+>>>>>>> 5a22ea0 (mysql_2)
                 query.bindValue(":age", fields[2]);
                 query.bindValue(":xuehao", fields[3]);
                 query.bindValue(":major", fields[4]);
@@ -223,7 +341,11 @@ void XDMFrame:: slotSave()
                 query.prepare("INSERT INTO programmer (name, sex, age, gongling) "
                               "VALUES (:name, :sex, :age, :gongling)");
                 query.bindValue(":name", fields[0]);
+<<<<<<< HEAD
                 query.bindValue(":sex", fields[1]);
+=======
+                query.bindValue(":sex", sex);
+>>>>>>> 5a22ea0 (mysql_2)
                 query.bindValue(":age", fields[2]);
                 query.bindValue(":gongling", fields[3]);
                 query.exec();
@@ -261,6 +383,7 @@ void XDMFrame:: slotSave()
 
 void XDMFrame::slotAdd()
 {
+<<<<<<< HEAD
 
     if(g_Table ==m_pStuTable)
     {
@@ -306,6 +429,11 @@ void XDMFrame::slotAdd()
             //显示下一页
         }
 
+=======
+    if (ui->lineEdit_xuehao->text() == ""){
+        QMessageBox::critical(this, "提示", "学号不能为空");
+        return;
+>>>>>>> 5a22ea0 (mysql_2)
     }
     else
     {
@@ -317,7 +445,80 @@ void XDMFrame::slotAdd()
         QString gongling = ui->lineEdit_xuehao->text();
 //        qDebug()<<ui->lineEdit_xuehao->text();
 
+<<<<<<< HEAD
         Programmer p(name,sex,age);
+=======
+    if(g_Table == m_pStuTable)
+    {
+        QSqlQuery query;
+        query.exec("select * from student;");
+        while (query.next())
+        {
+            if (query.value(4).toString() == ui->lineEdit_xuehao->text()){
+                QMessageBox::critical(this, "提示", "学号已存在，请重新输入");
+                return;
+            }
+        }
+        // 获取属性栏中的数据
+        QString name = ui->lineEdit_name->text();
+        int sex;
+        if (ui->comboBox_sex->currentText() == "男"){
+            sex = 1;
+        }
+        else{
+            sex = 0;
+        }
+        int age = ui->lineEdit_age->text().toInt();
+        //    QString age = ui->lineEdit_age->text();
+        QString xuehao = ui->lineEdit_xuehao->text();
+        QString major = ui->lineEdit_major->text();
+
+        Student s(name,ui->comboBox_sex->currentText(),age);
+        s.setXuehao(xuehao);
+        s.setMajor(major);
+        s_list.append(s);
+
+        // 将学生数据插入到数据库表中
+        query.prepare("INSERT INTO student (name, sex, age, xuehao, major) "
+                      "VALUES (:name, :sex, :age, :xuehao, :major)");
+        query.bindValue(":name", name);
+        query.bindValue(":sex", sex);
+        query.bindValue(":age", age);
+        query.bindValue(":xuehao", xuehao);
+        query.bindValue(":major", major);
+        query.exec();
+
+        if (s_list.size() <= 10)
+        {
+            int row = g_Table->rowCount();
+            g_Table->insertRow(row);
+
+            // 将属性栏数据插入表格的相应列
+            g_Table->setItem(row, table1HeaderList_stu.key("name"), new QTableWidgetItem(name));
+            g_Table->setItem(row, table1HeaderList_stu.key("sex"), new QTableWidgetItem(sex));
+            g_Table->setItem(row, table1HeaderList_stu.key("age"), new QTableWidgetItem(QString::number(age)));
+            g_Table->setItem(row, table1HeaderList_stu.key("xuehao"), new QTableWidgetItem(xuehao));
+            g_Table->setItem(row, table1HeaderList_stu.key("major"), new QTableWidgetItem(major));
+        }
+        if (s_list.size() > 10 && s_list.size() % 10 == 1)
+        {
+            this->slotPageDown();
+            //显示下一页
+        }
+
+    }
+    else
+    {
+        // 获取属性栏中的数据
+        QString name = ui->lineEdit_name->text();
+        QString sex = ui->comboBox_sex->currentText();
+        int age = ui->lineEdit_age->text().toInt();
+        //    QString age = ui->lineEdit_age->text();
+        QString gongling = ui->lineEdit_xuehao->text();
+//        qDebug()<<ui->lineEdit_xuehao->text();
+
+        Programmer p(name,ui->comboBox_sex->currentText(),age);
+>>>>>>> 5a22ea0 (mysql_2)
         p.setGongling(gongling);
         p_list.append(p);
 
@@ -342,15 +543,23 @@ void XDMFrame::slotAdd()
             g_Table->setItem(row, table1HeaderList_stu.key("age"), new QTableWidgetItem(QString::number(age)));
             g_Table->setItem(row, table1HeaderList_stu.key("xuehao"), new QTableWidgetItem(gongling));
         }
+<<<<<<< HEAD
         else
         {
 //            this->slotPageDown();
+=======
+        if (p_list.size() > 10 && p_list.size() % 10 == 1)
+        {
+            this->slotPageDown();
+>>>>>>> 5a22ea0 (mysql_2)
             //显示下一页
         }
     }
     //添加后清空属性栏内容
     this->lineEditClear();
     this->updateCur();
+
+    this->slotRedirect();
 }
 
 
@@ -377,7 +586,11 @@ void XDMFrame::slotDelete()
         foreach(int row, sortedRows)  // 遍历所有行号
         {
             g_Table->removeRow(row);  // 删除每一行
+<<<<<<< HEAD
 
+=======
+            qDebug() << row;
+>>>>>>> 5a22ea0 (mysql_2)
             // 从数据库中删除对应的数据
             if (g_Table == m_pStuTable)
             {
@@ -391,8 +604,11 @@ void XDMFrame::slotDelete()
                     qDebug() << "Failed to delete student from database:" << query.lastError().text();
                     return;  // 执行 SQL 语句失败，退出函数或进行错误处理
                 }
+<<<<<<< HEAD
                 // 从链表中移除该学生对象
                 s_list.removeAt(row);
+=======
+>>>>>>> 5a22ea0 (mysql_2)
             }
             else if (g_Table == m_pProgramTable)
             {
@@ -406,10 +622,15 @@ void XDMFrame::slotDelete()
                     qDebug() << "Failed to delete programmer from database:" << query.lastError().text();
                     return;  // 执行 SQL 语句失败，退出函数或进行错误处理
                 }
+<<<<<<< HEAD
                 // 从链表中移除该程序员对象
                 p_list.removeAt(row);
+=======
+>>>>>>> 5a22ea0 (mysql_2)
             }
         }
+        this->update();
+        this->slotRedirect();
     }
     else
     {
@@ -458,6 +679,7 @@ void XDMFrame::slotlineEdit_Age(const QString &arg1)
 void XDMFrame::slotComboBoxChange(int index)
 {
     disconnect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
+//        qDebug() << index;
     if(ui->comboBox->currentIndex()==0)
     {
         //修改属性栏
@@ -482,8 +704,10 @@ void XDMFrame::slotComboBoxChange(int index)
      }
     connect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
     this->lineEditClear();
+    this->updateCur();
 }
 
+<<<<<<< HEAD
 void XDMFrame::slotTableWidgetChange(int index)
 {
     disconnect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
@@ -512,6 +736,39 @@ void XDMFrame::slotTableWidgetChange(int index)
     connect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
     this->lineEditClear();
 }
+=======
+//void XDMFrame::slotTableWidgetChange(int index)
+//{
+////    disconnect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
+////    qDebug() << index;
+////    qDebug() << ui->tabWidget->currentIndex();
+//    if(ui->tabWidget->currentIndex() == 0)
+//    {
+//        //修改属性栏
+//        ui->comboBox->setCurrentIndex(0);
+////        qDebug() << ui->tabWidget->currentIndex();
+////        ui->xuehao->setText("学 号：");//重命名学号
+////        ui->lineEdit_major->setVisible(true);
+////        ui->major->setVisible(true);//重显示专业
+////        //更改表格
+////        g_Table= m_pStuTable;
+////        g_Table->getTableName("s");
+//    }
+//    else
+//    {
+//        ui->comboBox->setCurrentIndex(1);
+////        ui->xuehao->setText("工 龄：");// 学号修改为工龄
+////        ui->lineEdit_major->setVisible(false);
+////        ui->major->setVisible(false);//隐藏属性栏专业
+////        ui->lineEdit_major->setVisible((false));//隐藏表格专业
+////        g_Table = m_pProgramTable;
+////        g_Table->getTableName("p");
+//     }
+//    //table发送信息到Lineedit
+////    connect(g_Table, &XDMLogTable::sendToXDMF, this, &XDMFrame::slotlineEdit);
+////    this->lineEditClear();
+//}
+>>>>>>> 5a22ea0 (mysql_2)
 
 
 /**
@@ -578,18 +835,29 @@ void XDMFrame::slotTableWidgetChange(int index)
 void XDMFrame::slotHomePage()
 {
     g_Table->clearContents();
-    int row = 0;
+    g_Table->setRowCount(0);
     int all;
+<<<<<<< HEAD
     if (ui->tabWidget->currentIndex() == 0)
     {
         all = std::min(9, s_list.size() - 1);
         for (int i = 0; i <= all; i++){
+=======
+    if (g_Table == m_pStuTable)
+    {
+        this->currentPage_1 = 1;
+        all = std::min(9, s_list.size() - 1);
+        for (int i = 0; i <= all; i++){
+            int row = g_Table->rowCount();
+            g_Table->insertRow(row);
+>>>>>>> 5a22ea0 (mysql_2)
             const Student& student = s_list[i]; // 使用引用获取学生对象
             g_Table->setItem(row, 0, new QTableWidgetItem(student.name));
             g_Table->setItem(row, 1, new QTableWidgetItem(student.sex));
             g_Table->setItem(row, 2, new QTableWidgetItem(QString::number(student.age)));
             g_Table->setItem(row, 3, new QTableWidgetItem(student.getXuehao()));
             g_Table->setItem(row, 4, new QTableWidgetItem(student.getMajor()));
+<<<<<<< HEAD
             row++;
         }
         this->currentPage_1 = 1;
@@ -605,7 +873,23 @@ void XDMFrame::slotHomePage()
             g_Table->setItem(row, 3, new QTableWidgetItem(programmer.getGongling()));
             row++;
         }
+=======
+        }
+    }
+    else
+    {
+>>>>>>> 5a22ea0 (mysql_2)
         this->currentPage_2 = 1;
+        all = std::min(9, p_list.size() - 1);
+        for (int i = 0; i <= all; i++){
+            int row = g_Table->rowCount();
+            g_Table->insertRow(row);
+            const Programmer& programmer = p_list[i]; // 使用引用获取程序员对象
+            g_Table->setItem(row, 0, new QTableWidgetItem(programmer.name));
+            g_Table->setItem(row, 1, new QTableWidgetItem(programmer.sex));
+            g_Table->setItem(row, 2, new QTableWidgetItem(QString::number(programmer.age)));
+            g_Table->setItem(row, 3, new QTableWidgetItem(programmer.getGongling()));
+        }
     }
     this->updateCur();
 }
@@ -615,166 +899,85 @@ void XDMFrame::slotHomePage()
 
 void XDMFrame::slotPageUp()
 {
-    g_Table->clearContents();
-    int row = 0;
-    if (ui->tabWidget->currentIndex() == 1)
+    if (g_Table == m_pProgramTable)
     {
+        if (this->currentPage_2 == 1){
+            return;
+        }
         this->currentPage_2--;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_2;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > p_list.length()){
-            end = p_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(p_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(p_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(p_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(p_list[i].getGongling());
-            g_Table->setItem(row, 3, item4);
-            row++;
-        }
+        this->refreshPage();
     }
     else
     {
+        if (this->currentPage_1 == 1){
+            return;
+        }
         this->currentPage_1--;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_1;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > s_list.length()){
-            end = s_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(s_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(s_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(s_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(s_list[i].getXuehao());
-            g_Table->setItem(row, 3, item4);
-            QTableWidgetItem* item5 = new QTableWidgetItem(s_list[i].getMajor());
-            g_Table->setItem(row, 4, item5);
-            row++;
-        }
+        this->refreshPage();
     }
     this->updateCur();
 }
 
 void XDMFrame::slotPageDown()
 {
-    g_Table->clearContents();
-    int row = 0;
-    if (ui->tabWidget->currentIndex() == 1)
+    this->update();
+    if (g_Table == m_pProgramTable)
     {
+        if (this->currentPage_2 == this->allPage_2){
+            return;
+        }
         this->currentPage_2++;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_2;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > p_list.length()){
-            end = p_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(p_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(p_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(p_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(p_list[i].getGongling());
-            g_Table->setItem(row, 3, item4);
-            row++;
-        }
+        this->refreshPage();
     }
     else
     {
+        if (this->currentPage_1 == this->allPage_1){
+            return;
+        }
         this->currentPage_1++;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_1;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > s_list.length()){
-            end = s_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(s_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(s_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(s_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(s_list[i].getXuehao());
-            g_Table->setItem(row, 3, item4);
-            QTableWidgetItem* item5 = new QTableWidgetItem(s_list[i].getMajor());
-            g_Table->setItem(row, 4, item5);
-            row++;
-        }
+        this->refreshPage();
     }
     this->updateCur();
 }
 
 void XDMFrame::slotLastPage()
 {
-    g_Table->clearContents();
-    int row = 0;
-    if (ui->tabWidget->currentIndex() == 1)
+    if (g_Table == m_pProgramTable)
     {
         this->currentPage_2 = this->allPage_2;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_2;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > p_list.length()){
-            end = p_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(p_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(p_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(p_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(p_list[i].getGongling());
-            g_Table->setItem(row, 3, item4);
-            row++;
-        }
+        this->refreshPage();
     }
     else
     {
         this->currentPage_1= this->allPage_1;
-        int frist = 0, end = 9;
-        int currentPage = this->currentPage_1;
-        frist = frist + 10 * (currentPage - 1);
-        end = end  + 10 * (currentPage - 1);
-        if (end > s_list.length()){
-            end = s_list.length() - 1;
-        }
-        for (int i = frist; i <= end; i++){
-            QTableWidgetItem* item1 = new QTableWidgetItem(s_list[i].name);
-            g_Table->setItem(row, 0, item1);
-            QTableWidgetItem* item2 = new QTableWidgetItem(s_list[i].sex);
-            g_Table->setItem(row, 1, item2);
-            QTableWidgetItem* item3 = new QTableWidgetItem(QString::number(s_list[i].age));
-            g_Table->setItem(row, 2, item3);
-            QTableWidgetItem* item4 = new QTableWidgetItem(s_list[i].getXuehao());
-            g_Table->setItem(row, 3, item4);
-            QTableWidgetItem* item5 = new QTableWidgetItem(s_list[i].getMajor());
-            g_Table->setItem(row, 4, item5);
-            row++;
-        }
+        this->refreshPage();
     }
     this->updateCur();
 }
 
-void XDMFrame::slotRedirect()
+void XDMFrame::slotRedirect(bool btnClicked)
 {
-
+    if (g_Table == m_pProgramTable)
+    {
+        if (btnClicked == true){
+            this->currentPage_2 = ui->gotopage->text().toInt();
+        }
+        if ((this->currentPage_2 - 1) * 10 == p_list.length()){
+            this->currentPage_2--;
+        }
+        this->refreshPage();
+    }
+    else
+    {
+        if (btnClicked == true){
+            this->currentPage_1 = ui->gotopage->text().toInt();
+        }
+        if ((this->currentPage_1 - 1) * 10 == s_list.length()){
+            this->currentPage_1--;
+        }
+        this->refreshPage();
+    }
+    this->updateCur();
 }
 
 void XDMFrame::slotlineEdit(QStringList sl)

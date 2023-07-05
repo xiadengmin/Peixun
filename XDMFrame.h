@@ -7,6 +7,7 @@
 #include <QStringList>
 #include <QLineEdit>
 #include <QList>
+#include <QtMath>
 #include "xdmlogtable.h"
 #include "student.h"
 #include "programmer.h"
@@ -26,19 +27,21 @@ public:
     void lineEditClear();
     void updateCur();
 
+    void update();
+    void refreshPage();
 private slots:
     void slotSave();
     void slotAdd();
     void slotDelete();
     void slotlineEdit_Age(const QString &arg1);
     void slotComboBoxChange(int index);
-    void slotTableWidgetChange(int index);
+//    void slotTableWidgetChange(int index);
 
     void slotHomePage();
     void slotPageUp();
     void slotPageDown();
     void slotLastPage();
-    void slotRedirect();
+    void slotRedirect(bool btnClicked = false);
 
     void slotlineEdit(QStringList sl);
 

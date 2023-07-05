@@ -31,7 +31,7 @@ XDMLogTable::XDMLogTable(QWidget *parent) : QTableWidget(parent)
                 sl << text;
             }
         }
-        qDebug() << sl;
+//        qDebug() << sl;
         emit this->sendToXDMF(sl);
 
 
