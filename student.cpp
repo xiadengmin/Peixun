@@ -18,12 +18,14 @@ void Student::setXuehao(QString xuehao)
     this->xuehao = xuehao;
 }
 
-QString Student::getMajor()
+QString Student::getMajor()const
 {
     return this->major;
 }
 
-QString Student::getXuehao()
+QString Student::getXuehao() const
 {
     return this->xuehao;
 }
+
+

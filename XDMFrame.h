@@ -53,8 +53,6 @@ private:
     XDMLogTable *m_pProgramTable;
     XDMLogTable *g_Table;
 
-//    QVector<QVector<QString>> allData;  // 存储所有数据的二维向量
-//    static const int pageSize = 10;  // 每页的数据条数
     QList<Student> s_list;
     QList<Programmer> p_list;
     int currentPage_1 = 1;  // 当前页码，初始化为1

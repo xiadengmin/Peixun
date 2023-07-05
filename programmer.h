@@ -7,10 +7,10 @@ class Programmer : public People
 public:
     Programmer(const QString &name,const QString &sex ,int age);
     void setGongling(QString gongling);
-    QString getGongling();
+    QString getGongling() const;
 private:
     QString gongling;
 };
-//如何对它读取和设置
+
 
 #endif // PROGRAMMER_H

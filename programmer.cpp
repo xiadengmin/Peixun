@@ -13,7 +13,7 @@ void Programmer::setGongling(QString gongling)
     this->gongling = gongling;
 }
 
-QString Programmer::getGongling()
+QString Programmer::getGongling() const
 {
     return this->gongling;
 }

@@ -1,4 +1,3 @@
-
 #include "xdmlogtable.h"
 
 #include <QHeaderView>

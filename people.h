@@ -11,7 +11,7 @@ public:
     void setName(const QString &name);
     QString getName() const;
 
-    void setSex(const QString &sex);
+    void setSex(const QString &sex) ;
     QString getSex() const;
 
     void setAge(int age);

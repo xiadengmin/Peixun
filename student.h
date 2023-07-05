@@ -10,12 +10,27 @@ public:
 
     void setMajor(QString major);
     void setXuehao(QString xuehao);
-    QString getMajor();
-    QString getXuehao();
+    QString getMajor() const;
+    QString getXuehao() const;
+
+//    bool operator==(const Student& other) const
+//    {
+//        // 定义对象相等的逻辑
+//        return (name == other.name && sex == other.sex && age == other.age);
+//    }
+
+//    bool operator!=(const Student& other) const
+//    {
+//        // 定义对象不相等的逻辑
+//        return !(*this == other);
+//    }
+
 private:
     QString xuehao;
     QString major;
 };
+
+
 
 
 #endif // STUDENT_H
